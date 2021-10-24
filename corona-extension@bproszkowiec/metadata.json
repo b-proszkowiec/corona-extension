@@ -1,0 +1,10 @@
+{
+	"description" : "Shows information about covid-19 statistics for selected country.",
+	"name": "Covid-19 informer",
+	"shell-version" : [
+		"3.38.4"
+	],
+	"url": "",
+	"uuid" : "corona-extension@bproszkowiec",
+	"version": 1
+}
