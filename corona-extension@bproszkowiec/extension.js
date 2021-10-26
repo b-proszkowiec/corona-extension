@@ -31,7 +31,9 @@ const data = function (countryHttmlData) {
   let critical = removeColorFormatting(countryDataArray[7]);
   let casesPerMilion = removeColorFormatting(countryDataArray[8]);
 
-  let textToShow = `${newCases}  ${SKULL} ${removeNotNumber(newDeaths)}`;
+  let textToShow = `${newCases}  ${SKULL} ${
+    newDeaths == NOT_APPLICABLE ? newDeaths : removeNotNumber(newDeaths)
+  }`;
   panelButtonText.set_text(textToShow);
 };
 
