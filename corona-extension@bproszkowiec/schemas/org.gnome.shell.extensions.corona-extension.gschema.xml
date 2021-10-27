@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<schemalist>
+    <schema id="org.gnome.shell.extensions.corona-extension"
+    path="/org/gnome/shell/extensions/corona-extension/">
+
+    <key type="i" name="my-integer">
+        <default>100</default>
+        <summary>summary</summary>
+        <description>description</description>
+    </key>
+
+    <key type="s" name="my-string">
+        <default>"My string"</default>
+        <summary>summary</summary>
+        <description>description</description>
+    </key>
+
+    </schema>
+
+</schemalist>

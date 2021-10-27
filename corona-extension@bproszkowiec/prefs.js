@@ -1,9 +1,11 @@
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
+const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 function init() {}
 
 function buildPrefsWidget() {
+  log("-> buildPrefsWidget");
   let widget = new MyPrefsWidget();
   widget.show_all();
   return widget;
@@ -12,33 +14,33 @@ function buildPrefsWidget() {
 const MyPrefsWidget = new GObject.Class({
   Name: "My.Prefs.Widget",
   GTypeName: "MyPrefsWidget",
-  Extends: Gtk.Box,
+  Extends: Gtk.ScrolledWindow,
 
   _init: function (params) {
     this.parent(params);
-    this.margin = 20;
-    this.set_spacing(15);
-    this.set_orientation(Gtk.Orientation.VERTICAL);
 
-    let myLabel = new Gtk.Label({
-      label: "Translated text",
+    let builder = new Gtk.Builder();
+    builder.set_translation_domain("corona-extension");
+    builder.add_from_file(Me.path + "/prefs.ui");
+
+    let SignalHandler = {
+      on_my_spinbutton_value_changed(w) {
+        log(w.get_value_as_int());
+      },
+
+      on_my_switch_state_set(w) {
+        log(w.get_active());
+      },
+
+      on_my_combobox_changed(w) {
+        log(w.get_active());
+      },
+    };
+
+    builder.connect_signals_full((builder, object, signal, handler) => {
+      object.connect(signal, SignalHandler[handler].bind(this));
     });
 
-    let spinButton = new Gtk.SpinButton();
-    spinButton.set_sensitive(true);
-    spinButton.set_range(-60, -60);
-    spinButton.set_value(0);
-    spinButton.set_increments(1, 2);
-
-    spinButton.connect("value-changed", function (w) {
-      log(w.get_value_as_init());
-    });
-
-    let hBox = new Gtk.Box();
-    hBox.set_orientation(Gtk.Orientation.HORIZONTAL);
-
-    hBox.pack_start(myLabel, false, false, 0);
-    hBox.pack_start(spinButton, false, false, 0);
-    this.add(hBox);
+    this.add(builder.get_object("main_prefs"));
   },
 });

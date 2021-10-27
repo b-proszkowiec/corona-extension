@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.38.2 -->
+<interface>
+  <requires lib="gtk+" version="3.18"/>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="lower">-60</property>
+    <property name="upper">60</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">2</property>
+  </object>
+  <object class="GtkBox" id="main_prefs">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="margin-left">12</property>
+    <property name="margin-right">12</property>
+    <property name="margin-top">12</property>
+    <property name="margin-bottom">12</property>
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkFrame" id="frame1">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="label-xalign">0</property>
+        <property name="shadow-type">in</property>
+        <child>
+          <object class="GtkListBox" id="listbox1">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="selection-mode">none</property>
+            <child>
+              <object class="GtkListBoxRow" id="listboxrow0">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <child>
+                  <object class="GtkBox" id="row_box">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="margin-left">12</property>
+                    <property name="margin-right">12</property>
+                    <property name="margin-top">12</property>
+                    <property name="margin-bottom">12</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkBox" id="spinbutton_box">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <child>
+                          <object class="GtkLabel" id="spinbutton_label">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Reload every [min]</property>
+                            <property name="xalign">0</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSpinButton" id="my_spinbutton">
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="input-purpose">number</property>
+                            <property name="adjustment">adjustment1</property>
+                            <property name="climb-rate">1</property>
+                            <property name="numeric">True</property>
+                            <signal name="value-changed" handler="on_my_spinbutton_value_changed" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkListBoxRow" id="listboxrow1">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <child>
+                  <object class="GtkBox" id="row_box1">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="margin-left">12</property>
+                    <property name="margin-right">12</property>
+                    <property name="margin-top">12</property>
+                    <property name="margin-bottom">12</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkBox" id="switch_box">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="spacing">32</property>
+                        <child>
+                          <object class="GtkLabel" id="switch_label">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="valign">center</property>
+                            <property name="label" translatable="yes">Switch</property>
+                            <property name="xalign">0</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSwitch" id="my_switch">
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="valign">center</property>
+                            <property name="active">True</property>
+                            <signal name="state-set" handler="on_my_switch_state_set" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkListBoxRow" id="listboxrow2">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <child>
+                  <object class="GtkBox" id="row_box2">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="margin-left">12</property>
+                    <property name="margin-right">12</property>
+                    <property name="margin-top">12</property>
+                    <property name="margin-bottom">12</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkBox" id="combobox_box">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="spacing">32</property>
+                        <child>
+                          <object class="GtkLabel" id="combobox_label">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Country</property>
+                            <property name="xalign">0</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkComboBoxText" id="country_combobox">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="active">0</property>
+                            <property name="active-id">usa</property>
+                            <items>
+                              <item id="usa" translatable="yes">USA</item>
+                              <item translatable="yes">India</item>
+                              <item translatable="yes">Brazil</item>
+                              <item translatable="yes">UK</item>
+                              <item translatable="yes">Russia</item>
+                              <item translatable="yes">Turkey</item>
+                              <item translatable="yes">France</item>
+                              <item translatable="yes">Iran</item>
+                              <item translatable="yes">Argentina</item>
+                              <item translatable="yes">Spain</item>
+                              <item translatable="yes">Colombia</item>
+                              <item translatable="yes">Italy</item>
+                              <item translatable="yes">Germany</item>
+                              <item translatable="yes">Indonesia</item>
+                              <item translatable="yes">Mexico</item>
+                              <item translatable="yes">Poland</item>
+                              <item translatable="yes">SouthAfrica</item>
+                              <item translatable="yes">Ukraine</item>
+                              <item translatable="yes">Philippines</item>
+                              <item translatable="yes">Malaysia</item>
+                              <item translatable="yes">Peru</item>
+                              <item translatable="yes">Netherlands</item>
+                              <item translatable="yes">Iraq</item>
+                              <item translatable="yes">Thailand</item>
+                              <item translatable="yes">Czechia</item>
+                              <item translatable="yes">Japan</item>
+                              <item translatable="yes">Canada</item>
+                              <item translatable="yes">Chile</item>
+                              <item translatable="yes">Romania</item>
+                              <item translatable="yes">Bangladesh</item>
+                              <item translatable="yes">Belgium</item>
+                              <item translatable="yes">Israel</item>
+                              <item translatable="yes">Pakistan</item>
+                              <item translatable="yes">Sweden</item>
+                              <item translatable="yes">Serbia</item>
+                              <item translatable="yes">Portugal</item>
+                              <item translatable="yes">Cuba</item>
+                              <item translatable="yes">Morocco</item>
+                              <item translatable="yes">Kazakhstan</item>
+                              <item translatable="yes">Vietnam</item>
+                              <item translatable="yes">Switzerland</item>
+                              <item translatable="yes">Jordan</item>
+                              <item translatable="yes">Hungary</item>
+                              <item translatable="yes">Nepal</item>
+                              <item translatable="yes">Austria</item>
+                              <item translatable="yes">UAE</item>
+                              <item translatable="yes">Greece</item>
+                              <item translatable="yes">Tunisia</item>
+                              <item translatable="yes">Georgia</item>
+                              <item translatable="yes">Lebanon</item>
+                              <item translatable="yes">Guatemala</item>
+                              <item translatable="yes">Belarus</item>
+                              <item translatable="yes">Bulgaria</item>
+                              <item translatable="yes">CostaRica</item>
+                              <item translatable="yes">SaudiArabia</item>
+                              <item translatable="yes">SriLanka</item>
+                              <item translatable="yes">Azerbaijan</item>
+                              <item translatable="yes">Ecuador</item>
+                              <item translatable="yes">Bolivia</item>
+                              <item translatable="yes">Myanmar</item>
+                              <item translatable="yes">Panama</item>
+                              <item translatable="yes">Paraguay</item>
+                              <item translatable="yes">Slovakia</item>
+                              <item translatable="yes">Croatia</item>
+                              <item translatable="yes">Ireland</item>
+                              <item translatable="yes">Palestine</item>
+                              <item translatable="yes">Kuwait</item>
+                              <item translatable="yes">Venezuela</item>
+                              <item translatable="yes">Lithuania</item>
+                              <item translatable="yes">Uruguay</item>
+                              <item translatable="yes">Denmark</item>
+                              <item translatable="yes">Honduras</item>
+                              <item translatable="yes">Ethiopia</item>
+                              <item translatable="yes">S.Korea</item>
+                              <item translatable="yes">Mongolia</item>
+                              <item translatable="yes">Moldova</item>
+                              <item translatable="yes">Egypt</item>
+                              <item translatable="yes">Slovenia</item>
+                              <item translatable="yes">Oman</item>
+                              <item translatable="yes">Armenia</item>
+                              <item translatable="yes">Bahrain</item>
+                              <item translatable="yes">Kenya</item>
+                              <item translatable="yes">Bosnia</item>
+                              <item translatable="yes">Qatar</item>
+                              <item translatable="yes">Nigeria</item>
+                              <item translatable="yes">Zambia</item>
+                              <item translatable="yes">Algeria</item>
+                              <item translatable="yes">Latvia</item>
+                              <item translatable="yes">Norway</item>
+                              <item translatable="yes">Macedonia</item>
+                              <item translatable="yes">Botswana</item>
+                              <item translatable="yes">Estonia</item>
+                              <item translatable="yes">Uzbekistan</item>
+                              <item translatable="yes">Albania</item>
+                              <item translatable="yes">Kyrgyzstan</item>
+                              <item translatable="yes">Singapore</item>
+                              <item translatable="yes">Australia</item>
+                              <item translatable="yes">Afghanistan</item>
+                              <item translatable="yes">Finland</item>
+                              <item translatable="yes">Mozambique</item>
+                              <item translatable="yes">Montenegro</item>
+                              <item translatable="yes">Zimbabwe</item>
+                              <item translatable="yes">Ghana</item>
+                              <item translatable="yes">Namibia</item>
+                              <item translatable="yes">Uganda</item>
+                              <item translatable="yes">Cyprus</item>
+                              <item translatable="yes">Cambodia</item>
+                              <item translatable="yes">Cameroon</item>
+                              <item translatable="yes">Rwanda</item>
+                              <item translatable="yes">China</item>
+                              <item translatable="yes">Luxembourg</item>
+                              <item translatable="yes">Senegal</item>
+                              <item translatable="yes">Angola</item>
+                            </items>
+                            <signal name="changed" handler="on_my_combobox_changed" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">3</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+  </object>
+</interface>

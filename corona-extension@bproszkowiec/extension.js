@@ -2,6 +2,8 @@ const St = imports.gi.St;
 const Main = imports.ui.main;
 const Mainloop = imports.mainloop;
 const GLib = imports.gi.GLib;
+const Gio = imports.gi.Gio;
+const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 const COUNTRY = "Poland";
 const command = "curl https://corona-stats.online/" + COUNTRY;
@@ -50,7 +52,27 @@ function setButtonText() {
   return true;
 }
 
+function getSettings() {
+  let GioSSS = Gio.SettingsSchemaSource;
+  let schemaSource = GioSSS.new_from_directory(
+    Me.dir.get_child("schemas").get_path(),
+    GioSSS.get_default(),
+    false
+  );
+  let schemaObj = schemaSource.lookup(
+    "org.gnome.shell.extensions.corona-extension",
+    true
+  );
+  if (!schemaObj) {
+    throw new Error("cannot find schamas");
+  }
+  return new Gio.Settings({ settings_schema: schemaObj });
+}
+
 function init() {
+  let settings = getSettings;
+  log("my integer" + settings.get_int("my-integer".toString()));
+
   panelButton = new St.Bin({
     style_class: "panel-button",
   });
