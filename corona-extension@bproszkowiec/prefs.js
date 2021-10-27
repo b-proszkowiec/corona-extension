@@ -36,8 +36,8 @@ const CoronaPrefsWidget = new GObject.Class({
       on_country_changed(w) {
         const country = w.get_active_text();
         const country_id = w.get_active();
-        settings.set_int("country-id", country_id);
         settings.set_string("country", country);
+        settings.set_int("country-id", country_id);
       }
     };
 

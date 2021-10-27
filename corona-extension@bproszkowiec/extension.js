@@ -1,72 +1,51 @@
 const St = imports.gi.St;
 const Main = imports.ui.main;
 const Mainloop = imports.mainloop;
-const GLib = imports.gi.GLib;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const settings = Me.imports.lib.getSettings();
+let updateInfo = Me.imports.lib.CoronaInfo.getInstance();
 
-const URL = "curl https://corona-stats.online/";
-const SKULL = "\u2620";
-const INIT_REFRESH_PERIOD = 60 * 60;
-const INIT_COUNTRY = "Poland";
-const NOT_APPLICABLE = "n/a";
+let panelButton, panelButtonText, timeout, refreshPeriod = 60.0;
 
-let panelButton, panelButtonText, timeout;
+function timerHandler() {
+  updateButtonText();
+  timeout = Mainloop.timeout_add_seconds(refreshPeriod, timerHandler);
+  return false;
+}
 
-const data = function (countryHttmlData, selectedCountry) {
-  const regex = `${selectedCountry}.*║`;
-  const countryRow = countryHttmlData
-    .match(regex)
-    .toString()
-    .replaceAll(/║|,|\s/gi, "");
-  const countryDataArray = String(countryRow).split(/\│/);
+function countryChangedHandler() {
+  updateButtonText();
+}
 
-  const country = removeColorFormatting(countryDataArray[0]);
-  let totalCases = removeColorFormatting(countryDataArray[1]);
-  let newCases = removeColorFormatting(countryDataArray[2]);
-  if (newCases == "") newCases = NOT_APPLICABLE;
-  let totalDeaths = removeColorFormatting(countryDataArray[3]);
-  let newDeaths = removeColorFormatting(countryDataArray[4]);
-  if (newDeaths == "") newDeaths = NOT_APPLICABLE;
-  let recovered = removeColorFormatting(countryDataArray[5]);
-  let active = removeColorFormatting(countryDataArray[6]);
-  let critical = removeColorFormatting(countryDataArray[7]);
-  let casesPerMilion = removeColorFormatting(countryDataArray[8]);
-
-  let textToShow = `${newCases}  ${SKULL} ${
-    newDeaths == NOT_APPLICABLE ? newDeaths : removeNotNumber(newDeaths)
-  }`;
-  panelButtonText.set_text(textToShow);
-};
-
-const removeColorFormatting = (text) => text.replace(/\u001b\[.*?m/g, "");
-
-const removeNotNumber = (text) => text.replace(/[^0-9]+/g, "");
-
-function getCoronaInfo() {
-  const country = settings.get_string("country");
-  const [ok, out, err, exit] = GLib.spawn_command_line_sync(URL + country);
-  data(String(out), country);
+function updateIntervalChangedHandler() {
+  refreshPeriod = settings.get_int("update-interval") * 60;
+  timeout = Mainloop.timeout_add_seconds(refreshPeriod, timerHandler);
 }
 
 function init() {
-  settings.set_string("country", "Poland");
-  settings.set_int("update-interval", INIT_REFRESH_PERIOD);
-
   panelButton = new St.Bin({
     style_class: "panel-button",
   });
   panelButtonText = new St.Label({
-    style_class: "examplePanelText",
+    style_class: "coronaInfoPanelText",
     text: "Starting...",
   });
   panelButton.set_child(panelButtonText);
+  refreshPeriod = settings.get_int("update-interval") * 60;
+
+  settings.connect('changed::' + "country", countryChangedHandler);
+  settings.connect('changed::' + "update-interval", updateIntervalChangedHandler);
+}
+
+function updateButtonText() {
+  let data = updateInfo.updateCoronaInfo();
+  panelButtonText.set_text(data);
 }
 
 function enable() {
   Main.panel._rightBox.insert_child_at_index(panelButton, 1);
-  timeout = Mainloop.timeout_add_seconds(INIT_REFRESH_PERIOD, getCoronaInfo);
-  getCoronaInfo();
+  timeout = Mainloop.timeout_add_seconds(refreshPeriod, timerHandler);
+  updateButtonText();
 }
 
 function disable() {
