@@ -2,19 +2,19 @@ const St = imports.gi.St;
 const Main = imports.ui.main;
 const Mainloop = imports.mainloop;
 const GLib = imports.gi.GLib;
-const Gio = imports.gi.Gio;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
+const settings = Me.imports.lib.getSettings();
 
-const COUNTRY = "Poland";
-const command = "curl https://corona-stats.online/" + COUNTRY;
+const URL = "curl https://corona-stats.online/";
 const SKULL = "\u2620";
-const REFRESH_PERIOD = 60 * 60;
+const INIT_REFRESH_PERIOD = 60 * 60;
+const INIT_COUNTRY = "Poland";
 const NOT_APPLICABLE = "n/a";
 
 let panelButton, panelButtonText, timeout;
 
-const data = function (countryHttmlData) {
-  const regex = `${COUNTRY}.*║`;
+const data = function (countryHttmlData, selectedCountry) {
+  const regex = `${selectedCountry}.*║`;
   const countryRow = countryHttmlData
     .match(regex)
     .toString()
@@ -44,34 +44,14 @@ const removeColorFormatting = (text) => text.replace(/\u001b\[.*?m/g, "");
 const removeNotNumber = (text) => text.replace(/[^0-9]+/g, "");
 
 function getCoronaInfo() {
-  const [ok, out, err, exit] = GLib.spawn_command_line_sync(command);
-  data(out.toString());
-}
-
-function setButtonText() {
-  return true;
-}
-
-function getSettings() {
-  let GioSSS = Gio.SettingsSchemaSource;
-  let schemaSource = GioSSS.new_from_directory(
-    Me.dir.get_child("schemas").get_path(),
-    GioSSS.get_default(),
-    false
-  );
-  let schemaObj = schemaSource.lookup(
-    "org.gnome.shell.extensions.corona-extension",
-    true
-  );
-  if (!schemaObj) {
-    throw new Error("cannot find schamas");
-  }
-  return new Gio.Settings({ settings_schema: schemaObj });
+  const country = settings.get_string("country");
+  const [ok, out, err, exit] = GLib.spawn_command_line_sync(URL + country);
+  data(String(out), country);
 }
 
 function init() {
-  let settings = getSettings;
-  log("my integer" + settings.get_int("my-integer".toString()));
+  settings.set_string("country", "Poland");
+  settings.set_int("update-interval", INIT_REFRESH_PERIOD);
 
   panelButton = new St.Bin({
     style_class: "panel-button",
@@ -85,7 +65,7 @@ function init() {
 
 function enable() {
   Main.panel._rightBox.insert_child_at_index(panelButton, 1);
-  timeout = Mainloop.timeout_add_seconds(REFRESH_PERIOD, getCoronaInfo);
+  timeout = Mainloop.timeout_add_seconds(INIT_REFRESH_PERIOD, getCoronaInfo);
   getCoronaInfo();
 }
 
