@@ -34,7 +34,7 @@ function collectData (httmlData, selectedCountry) {
   var countryRow = httmlData
     .match(regex)
     .toString()
-    .replaceAll(/║|,|\s/gi, "");
+    .replace(/║|,|\s/gi, "");
     var countryDataArray = String(countryRow).split(/\│/);
 
   var country = removeColorFormatting(countryDataArray[0]);
