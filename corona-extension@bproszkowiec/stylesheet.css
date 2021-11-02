@@ -2,3 +2,46 @@
   margin-top: 3px;
   font-size: 11pt;
 }
+
+.corona-current-summarybox,
+.corona-current-databox-captions,
+.corona-current-databox-values {
+  border-radius: 0px;
+  padding: 0px;
+  border: 0px;
+}
+
+.corona-current-summarybox {
+  padding-top: 5px;
+}
+
+.current-country-summary {
+  font-size: 31px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.corona-current-databox {
+  padding: 5px 15px 0px;
+}
+
+.corona-current-iconbox {
+  padding-right: 20px;
+}
+
+.corona-current-databox-captions {
+  text-align: right;
+  padding-right: 5px;
+  spacing: 0;
+}
+
+.new-cases-icon-style {
+  padding-right: 5px;
+  width: 24px;
+  height: 24px;
+}
+
+.new-deaths-icon-style {
+  padding-left: 15px;
+  padding-right: 5px;
+}
