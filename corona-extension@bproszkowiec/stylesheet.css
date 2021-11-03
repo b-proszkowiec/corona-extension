@@ -45,3 +45,18 @@
   padding-left: 15px;
   padding-right: 5px;
 }
+
+.corona-menu-button-container {
+}
+
+.corona-button-action:hover,
+.corona-button-action:focus {
+  border-color: #777;
+}
+.corona-button-action > StIcon {
+  icon-size: 16px;
+}
+.corona-button-box {
+  padding: 0px;
+  spacing: 22px;
+}

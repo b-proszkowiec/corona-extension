@@ -1,9 +1,10 @@
-var Gio = imports.gi.Gio;
-var GLib = imports.gi.GLib;
-var Me = imports.misc.extensionUtils.getCurrentExtension();
+const ByteArray = imports.byteArray;
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
+const Me = imports.misc.extensionUtils.getCurrentExtension();
 
-var URL = "curl https://corona-stats.online/";
-var NOT_APPLICABLE = "n/a";
+const URL = "curl https://corona-stats.online/";
+const NOT_APPLICABLE = "n/a";
 
 class CoronaInfo {
   constructor() {
@@ -19,7 +20,7 @@ class CoronaInfo {
   updateCoronaInfo() {
     let country = CoronaInfo.settings.get_string("country");
     let [ok, out, err, exit] = GLib.spawn_command_line_sync(URL + country);
-    var data = collectData(String(out), country);
+    let data = collectData(ByteArray.toString(out), country);
     return data;
   }
 }
@@ -36,7 +37,7 @@ function collectData(httmlData, selectedCountry) {
     .replace(/║|,|\s/gi, "");
   var countryDataArray = String(countryRow).split(/\│/);
 
-  const data = {
+  var data = {
     country: removeColorFormatting(countryDataArray[0].replace(/\(.*\)/gi, "")),
     totalCases: removeColorFormatting(countryDataArray[1]),
     newCases: removeColorFormatting(countryDataArray[2]),

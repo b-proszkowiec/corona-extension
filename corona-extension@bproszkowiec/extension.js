@@ -1,9 +1,8 @@
-const St = imports.gi.St;
+const { Clutter, Gio, St, GObject } = imports.gi;
 const Main = imports.ui.main;
 const Mainloop = imports.mainloop;
-const GObject = imports.gi.GObject;
-const Gio = imports.gi.Gio;
-const Me = imports.misc.extensionUtils.getCurrentExtension();
+const ExtensionUtils = imports.misc.extensionUtils;
+const Me = ExtensionUtils.getCurrentExtension();
 const settings = Me.imports.lib.getSettings();
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
@@ -37,24 +36,50 @@ let CoronaMenuButton = GObject.registerClass(
       });
       _itemCurrent.actor.add_actor(this._currentCountryInfo);
       this.menu.addMenuItem(_itemCurrent);
+
+      //* create settings box
+
+      let item = new PopupMenu.PopupBaseMenuItem({
+        reactive: false,
+        style_class: "corona-menu-button-container",
+      });
+
+      let customButtonBox = new St.BoxLayout({
+        style_class: "corona-button-box",
+        vertical: false,
+        clip_to_allocation: true,
+        x_align: Clutter.ActorAlign.CENTER,
+        y_align: Clutter.ActorAlign.CENTER,
+        reactive: true,
+        x_expand: true,
+        pack_start: false,
+      });
+
+      // custom round preferences button
+      let prefsButton = this._createRoundButton(
+        "preferences-system-symbolic",
+        _("Preferences")
+      );
+
+      prefsButton.connect("clicked", (self) => {
+        this.menu._getTopMenu().close();
+
+        // Gnome 3.36 has a fancier way of opening preferences
+        if (typeof ExtensionUtils.openPrefs === "function") {
+          ExtensionUtils.openPrefs();
+        } else {
+          Util.spawn(["gnome-shell-extension-prefs", Me.metadata.uuid]);
+        }
+      });
+      customButtonBox.add_actor(prefsButton);
+
+      // now add the buttons to the top bar
+      item.actor.add_actor(customButtonBox);
+
+      // add buttons
+      this.menu.addMenuItem(item);
+
       this.buildCurrentCountryData(null);
-
-      //   this._buttonBox2 = new St.BoxLayout({
-      //     style_class: "openweather-button-box",
-      //   });
-
-      //   this._prefsButton = this.createButton(
-      //     "preferences-system-symbolic",
-      //     _("Corona Settings")
-      //   );
-      //   if (this._use_text_on_buttons)
-      //     this._prefsButton.set_label(this._prefsButton.get_accessible_name());
-      //   // this._prefsButton.connect(
-      //   //   "clicked",
-      //   //   Lang.bind(this, this._onPreferencesActivate)
-      //   // );
-      //   this._buttonBox2.add_actor(this._prefsButton);
-      //   _itemCurrent.actor.add_actor(this._buttonBox2);
     }
 
     destroy() {
@@ -96,6 +121,18 @@ let CoronaMenuButton = GObject.registerClass(
     rebuildCurrentCountryData(coronaData) {
       this.destroyCurrentCountryData();
       this.buildCurrentCountryData(coronaData);
+    }
+
+    _createRoundButton(iconName) {
+      let button = new St.Button({
+        style_class: "message-list-clear-button button vitals-button-action",
+      });
+
+      button.child = new St.Icon({
+        icon_name: iconName,
+      });
+
+      return button;
     }
 
     buildCurrentCountryData(coronaData) {
@@ -155,6 +192,8 @@ let CoronaMenuButton = GObject.registerClass(
       ab.add_actor(this._newDeathsIcon);
       ab.add_actor(this._newDeaths);
       bb.add_actor(ab);
+
+      //*
 
       // Other labels
       this._totalCases = new St.Label({
@@ -284,7 +323,7 @@ function init() {
 }
 
 function updateButtonText() {
-  let data = updateInfo.updateCoronaInfo();
+  var data = updateInfo.updateCoronaInfo();
 
   let panelText = `${data.newCases}  ${SKULL} ${
     data.newDeaths == NOT_APPLICABLE ? data.newDeaths : data.newDeaths
