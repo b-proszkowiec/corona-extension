@@ -21,10 +21,10 @@ let CoronaMenuButton = GObject.registerClass(
       super._init(0);
 
       this.panelButton = new St.Bin({
-        style_class: "panel-button",
+        style_class: "corona-panel-action",
       });
       this.panelButtonText = new St.Label({
-        style_class: "coronaInfoPanelText",
+        style_class: "corona-panel-text",
         text: "Starting...",
       });
       this.panelButton.set_child(this.panelButtonText);
@@ -37,7 +37,7 @@ let CoronaMenuButton = GObject.registerClass(
       _itemCurrent.actor.add_actor(this._currentCountryInfo);
       this.menu.addMenuItem(_itemCurrent);
 
-      //* create settings box
+      //* create settings box *//
 
       let item = new PopupMenu.PopupBaseMenuItem({
         reactive: false,
@@ -48,7 +48,7 @@ let CoronaMenuButton = GObject.registerClass(
         style_class: "corona-button-box",
         vertical: false,
         clip_to_allocation: true,
-        x_align: Clutter.ActorAlign.CENTER,
+        x_align: Clutter.ActorAlign.START,
         y_align: Clutter.ActorAlign.CENTER,
         reactive: true,
         x_expand: true,
@@ -88,9 +88,7 @@ let CoronaMenuButton = GObject.registerClass(
     }
 
     createButton(iconName, accessibleName) {
-      let button;
-
-      button = new St.Button({
+      let button = new St.Button({
         reactive: true,
         can_focus: true,
         track_hover: true,
@@ -101,7 +99,6 @@ let CoronaMenuButton = GObject.registerClass(
       button.child = new St.Icon({
         icon_name: iconName,
       });
-
       return button;
     }
 
@@ -131,13 +128,12 @@ let CoronaMenuButton = GObject.registerClass(
       button.child = new St.Icon({
         icon_name: iconName,
       });
-
       return button;
     }
 
     buildCurrentCountryData(coronaData) {
       this._newCasesIcon = new St.Icon({
-        icon_size: 15,
+        icon_size: 18,
         gicon: Gio.icon_new_for_string(
           Me.dir.get_path() + "/icons/man-shape.svg"
         ),
@@ -145,7 +141,7 @@ let CoronaMenuButton = GObject.registerClass(
       });
 
       this._newDeathsIcon = new St.Icon({
-        icon_size: 15,
+        icon_size: 18,
         gicon: Gio.icon_new_for_string(
           Me.dir.get_path() + "/icons/sick-face.svg"
         ),
@@ -175,12 +171,14 @@ let CoronaMenuButton = GObject.registerClass(
           coronaData == null
             ? "---"
             : this.numberWithCommas(coronaData.newCases),
+        style_class: "today-data-info",
       });
       this._newDeaths = new St.Label({
         text:
           coronaData == null
             ? "---"
             : this.numberWithCommas(coronaData.newDeaths),
+        style_class: "today-data-info",
       });
 
       let ab = new St.BoxLayout({
@@ -193,42 +191,46 @@ let CoronaMenuButton = GObject.registerClass(
       ab.add_actor(this._newDeaths);
       bb.add_actor(ab);
 
-      //*
-
       // Other labels
       this._totalCases = new St.Label({
         text:
           coronaData == null
             ? "---"
             : this.numberWithCommas(coronaData.totalCases),
+        style_class: "statistic-data-info-value",
       });
       this._totalDeaths = new St.Label({
         text:
           coronaData == null
             ? "---"
             : this.numberWithCommas(coronaData.totalDeaths),
+        style_class: "statistic-data-info-value",
       });
       this._recovered = new St.Label({
         text:
           coronaData == null
             ? "---"
             : this.numberWithCommas(coronaData.recovered),
+        style_class: "statistic-data-info-value",
       });
       this._activeSick = new St.Label({
         text:
           coronaData == null ? "---" : this.numberWithCommas(coronaData.active),
+        style_class: "statistic-data-info-value",
       });
       this._criticalSick = new St.Label({
         text:
           coronaData == null
             ? "---"
             : this.numberWithCommas(coronaData.critical),
+        style_class: "statistic-data-info-value",
       });
       this._casesPerMilion = new St.Label({
         text:
           coronaData == null
             ? "---"
             : this.numberWithCommas(coronaData.casesPerMilion),
+        style_class: "statistic-data-info-value",
       });
       let rb = new St.BoxLayout({
         style_class: "corona-current-databox",
@@ -248,36 +250,42 @@ let CoronaMenuButton = GObject.registerClass(
       rb_captions.add_actor(
         new St.Label({
           text: _("Total cases:"),
+          style_class: "statistic-data-info-key",
         })
       );
       rb_values.add_actor(this._totalCases);
       rb_captions.add_actor(
         new St.Label({
           text: _("Total deaths:"),
+          style_class: "statistic-data-info-key",
         })
       );
       rb_values.add_actor(this._totalDeaths);
       rb_captions.add_actor(
         new St.Label({
           text: _("Recovered:"),
+          style_class: "statistic-data-info-key",
         })
       );
       rb_values.add_actor(this._recovered);
       rb_captions.add_actor(
         new St.Label({
           text: _("Active:"),
+          style_class: "statistic-data-info-key",
         })
       );
       rb_values.add_actor(this._activeSick);
       rb_captions.add_actor(
         new St.Label({
           text: _("Critical:"),
+          style_class: "statistic-data-info-key",
         })
       );
       rb_values.add_actor(this._criticalSick);
       rb_captions.add_actor(
         new St.Label({
           text: _("Cases / 1M:"),
+          style_class: "statistic-data-info-key",
         })
       );
       rb_values.add_actor(this._casesPerMilion);
