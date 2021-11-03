@@ -14,11 +14,9 @@ let timeout,
 var NOT_APPLICABLE = "n/a";
 var SKULL = "\u2620";
 
-function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-}
+let coronaMenu;
 
-let coronaMenuButton = GObject.registerClass(
+let CoronaMenuButton = GObject.registerClass(
   class CoronaMenuButton extends PanelMenu.Button {
     _init() {
       super._init(0);
@@ -38,10 +36,52 @@ let coronaMenuButton = GObject.registerClass(
         reactive: false,
       });
       _itemCurrent.actor.add_actor(this._currentCountryInfo);
-
       this.menu.addMenuItem(_itemCurrent);
-
       this.buildCurrentCountryData(null);
+
+      //   this._buttonBox2 = new St.BoxLayout({
+      //     style_class: "openweather-button-box",
+      //   });
+
+      //   this._prefsButton = this.createButton(
+      //     "preferences-system-symbolic",
+      //     _("Corona Settings")
+      //   );
+      //   if (this._use_text_on_buttons)
+      //     this._prefsButton.set_label(this._prefsButton.get_accessible_name());
+      //   // this._prefsButton.connect(
+      //   //   "clicked",
+      //   //   Lang.bind(this, this._onPreferencesActivate)
+      //   // );
+      //   this._buttonBox2.add_actor(this._prefsButton);
+      //   _itemCurrent.actor.add_actor(this._buttonBox2);
+    }
+
+    destroy() {
+      this.destroyCurrentCountryData();
+      super.destroy();
+    }
+
+    createButton(iconName, accessibleName) {
+      let button;
+
+      button = new St.Button({
+        reactive: true,
+        can_focus: true,
+        track_hover: true,
+        accessible_name: accessibleName,
+        style_class: "message-list-clear-button button corona-button-action",
+      });
+
+      button.child = new St.Icon({
+        icon_name: iconName,
+      });
+
+      return button;
+    }
+
+    numberWithCommas(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     }
 
     update(coronaData) {
@@ -59,8 +99,6 @@ let coronaMenuButton = GObject.registerClass(
     }
 
     buildCurrentCountryData(coronaData) {
-      log(String(Me.dir.get_path()));
-
       this._newCasesIcon = new St.Icon({
         icon_size: 15,
         gicon: Gio.icon_new_for_string(
@@ -78,7 +116,10 @@ let coronaMenuButton = GObject.registerClass(
       });
 
       this._currentCountrySummary = new St.Label({
-        text: coronaData == null ? "---" : numberWithCommas(coronaData.country),
+        text:
+          coronaData == null
+            ? "---"
+            : this.numberWithCommas(coronaData.country),
         style_class: "current-country-summary",
       });
       this._countryLabel = new St.Label({
@@ -94,11 +135,15 @@ let coronaMenuButton = GObject.registerClass(
 
       this._newCases = new St.Label({
         text:
-          coronaData == null ? "---" : numberWithCommas(coronaData.newCases),
+          coronaData == null
+            ? "---"
+            : this.numberWithCommas(coronaData.newCases),
       });
       this._newDeaths = new St.Label({
         text:
-          coronaData == null ? "---" : numberWithCommas(coronaData.newDeaths),
+          coronaData == null
+            ? "---"
+            : this.numberWithCommas(coronaData.newDeaths),
       });
 
       let ab = new St.BoxLayout({
@@ -114,28 +159,37 @@ let coronaMenuButton = GObject.registerClass(
       // Other labels
       this._totalCases = new St.Label({
         text:
-          coronaData == null ? "---" : numberWithCommas(coronaData.totalCases),
+          coronaData == null
+            ? "---"
+            : this.numberWithCommas(coronaData.totalCases),
       });
       this._totalDeaths = new St.Label({
         text:
-          coronaData == null ? "---" : numberWithCommas(coronaData.totalDeaths),
+          coronaData == null
+            ? "---"
+            : this.numberWithCommas(coronaData.totalDeaths),
       });
       this._recovered = new St.Label({
         text:
-          coronaData == null ? "---" : numberWithCommas(coronaData.recovered),
+          coronaData == null
+            ? "---"
+            : this.numberWithCommas(coronaData.recovered),
       });
       this._activeSick = new St.Label({
-        text: coronaData == null ? "---" : numberWithCommas(coronaData.active),
+        text:
+          coronaData == null ? "---" : this.numberWithCommas(coronaData.active),
       });
       this._criticalSick = new St.Label({
         text:
-          coronaData == null ? "---" : numberWithCommas(coronaData.critical),
+          coronaData == null
+            ? "---"
+            : this.numberWithCommas(coronaData.critical),
       });
       this._casesPerMilion = new St.Label({
         text:
           coronaData == null
             ? "---"
-            : numberWithCommas(coronaData.casesPerMilion),
+            : this.numberWithCommas(coronaData.casesPerMilion),
       });
       let rb = new St.BoxLayout({
         style_class: "corona-current-databox",
@@ -203,8 +257,10 @@ let coronaMenuButton = GObject.registerClass(
 );
 
 function timerHandler() {
-  updateButtonText();
-  timeout = Mainloop.timeout_add_seconds(refreshPeriod, timerHandler);
+  if (coronaMenu === null) {
+    updateButtonText();
+    timeout = Mainloop.timeout_add_seconds(refreshPeriod, timerHandler);
+  }
   return false;
 }
 
@@ -233,18 +289,20 @@ function updateButtonText() {
   let panelText = `${data.newCases}  ${SKULL} ${
     data.newDeaths == NOT_APPLICABLE ? data.newDeaths : data.newDeaths
   }`;
-  coronaMenuButton.panelButtonText.set_text(panelText);
-  coronaMenuButton.update(data);
+  coronaMenu.panelButtonText.set_text(panelText);
+  coronaMenu.update(data);
 }
 
 function enable() {
   timeout = Mainloop.timeout_add_seconds(refreshPeriod, timerHandler);
 
-  coronaMenuButton = new coronaMenuButton();
-  Main.panel.addToStatusArea("CoronaMenuButton", coronaMenuButton, 1);
+  coronaMenu = new CoronaMenuButton();
+  Main.panel.addToStatusArea("coronaMenu", coronaMenu, 1);
   updateButtonText();
 }
 
 function disable() {
   Mainloop.source_remove(timeout);
+  coronaMenu.destroy();
+  coronaMenu = null;
 }
