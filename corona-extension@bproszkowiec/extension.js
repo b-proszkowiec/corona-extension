@@ -3,15 +3,15 @@ const Main = imports.ui.main;
 const Mainloop = imports.mainloop;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
-const settings = Me.imports.lib.getSettings();
+const Settings = Me.imports.lib.getSettings();
+const NOT_APPLICABLE = Me.imports.lib.NOT_APPLICABLE;
+const SKULL = Me.imports.lib.SKULL;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 
 let updateInfo = Me.imports.lib.CoronaInfo.getInstance();
 let timeout,
   refreshPeriod = 60.0;
-var NOT_APPLICABLE = "n/a";
-var SKULL = "\u2620";
 
 let coronaMenu;
 
@@ -64,7 +64,6 @@ let CoronaMenuButton = GObject.registerClass(
       prefsButton.connect("clicked", (self) => {
         this.menu._getTopMenu().close();
 
-        // Gnome 3.36 has a fancier way of opening preferences
         if (typeof ExtensionUtils.openPrefs === "function") {
           ExtensionUtils.openPrefs();
         } else {
@@ -73,7 +72,7 @@ let CoronaMenuButton = GObject.registerClass(
       });
       customButtonBox.add_actor(prefsButton);
 
-      // now add the buttons to the top bar
+      // add the buttons to the top bar
       item.actor.add_actor(customButtonBox);
 
       // add buttons
@@ -151,7 +150,7 @@ let CoronaMenuButton = GObject.registerClass(
       this._currentCountrySummary = new St.Label({
         text:
           coronaData == null
-            ? "---"
+            ? "No data"
             : this.numberWithCommas(coronaData.country),
         style_class: "current-country-summary",
       });
@@ -316,15 +315,15 @@ function countryChangedHandler() {
 }
 
 function updateIntervalChangedHandler() {
-  refreshPeriod = settings.get_int("update-interval") * 60;
+  refreshPeriod = Settings.get_int("update-interval") * 60;
   timeout = Mainloop.timeout_add_seconds(refreshPeriod, timerHandler);
 }
 
 function init() {
-  refreshPeriod = settings.get_int("update-interval") * 60;
+  refreshPeriod = Settings.get_int("update-interval") * 60;
 
-  settings.connect("changed::" + "country", countryChangedHandler);
-  settings.connect(
+  Settings.connect("changed::" + "country", countryChangedHandler);
+  Settings.connect(
     "changed::" + "update-interval",
     updateIntervalChangedHandler
   );
@@ -333,9 +332,15 @@ function init() {
 function updateButtonText() {
   var data = updateInfo.updateCoronaInfo();
 
-  let panelText = `${data.newCases}  ${SKULL} ${
-    data.newDeaths == NOT_APPLICABLE ? data.newDeaths : data.newDeaths
-  }`;
+  let panelText;
+  if (data === null) {
+    panelText = `${NOT_APPLICABLE} ${SKULL} ${NOT_APPLICABLE}`;
+  } else {
+    panelText = `${data.newCases}  ${SKULL} ${
+      data.newDeaths == NOT_APPLICABLE ? data.newDeaths : data.newDeaths
+    }`;
+  }
+
   coronaMenu.panelButtonText.set_text(panelText);
   coronaMenu.update(data);
 }
