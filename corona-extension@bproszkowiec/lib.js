@@ -3,7 +3,6 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
-const URL = "https://corona-stats.online/";
 const NOT_APPLICABLE = "n/a";
 const SKULL = "\u2620";
 
@@ -18,13 +17,9 @@ class CoronaInfo {
     return CoronaInfo._instance || new CoronaInfo();
   }
 
-  updateCoronaInfo() {
+  formatResponse(body) {
     let country = CoronaInfo.settings.get_string("country");
-    let [ok, out, err, exit] = GLib.spawn_command_line_sync(
-      "curl " + URL + country
-    );
-    log(out);
-    let data = collectData(ByteArray.toString(out), country);
+    let data = collectData(body, country);
     return data;
   }
 }

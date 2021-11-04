@@ -1,4 +1,6 @@
 const { Clutter, Gio, St, GObject } = imports.gi;
+const Lang = imports.lang;
+const Soup = imports.gi.Soup;
 const Main = imports.ui.main;
 const Mainloop = imports.mainloop;
 const ExtensionUtils = imports.misc.extensionUtils;
@@ -10,10 +12,11 @@ const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 
 let updateInfo = Me.imports.lib.CoronaInfo.getInstance();
-let timeout,
-  refreshPeriod = 60.0;
-
+let refreshPeriod = 60.0;
 let coronaMenu;
+let timeout;
+
+const URL = "https://corona-stats.online/";
 
 let CoronaMenuButton = GObject.registerClass(
   class CoronaMenuButton extends PanelMenu.Button {
@@ -303,15 +306,15 @@ let CoronaMenuButton = GObject.registerClass(
 );
 
 function timerHandler() {
-  if (coronaMenu === null) {
-    updateButtonText();
+  if (coronaMenu !== null) {
+    requestCoronaInfo();
     timeout = Mainloop.timeout_add_seconds(refreshPeriod, timerHandler);
   }
   return false;
 }
 
 function countryChangedHandler() {
-  updateButtonText();
+  requestCoronaInfo();
 }
 
 function updateIntervalChangedHandler() {
@@ -319,9 +322,42 @@ function updateIntervalChangedHandler() {
   timeout = Mainloop.timeout_add_seconds(refreshPeriod, timerHandler);
 }
 
+function requestCoronaInfo() {
+  let country = Settings.get_string("country");
+  GET_URL(URL + country, function (status_code, body) {
+    let formattedInfo = updateInfo.formatResponse(body);
+    updateButtonText(formattedInfo);
+  });
+}
+
+function GET_URL(url, callback) {
+  let request = Soup.Message.new("GET", url);
+  let _session = new Soup.SessionAsync();
+  _session.queue_message(
+    request,
+    Lang.bind(this, function (session, message) {
+      callback(message.status_code, request.response_body.data);
+    })
+  );
+}
+
+function updateButtonText(formattedInfo) {
+  let panelText;
+  if (formattedInfo === null) {
+    panelText = `${NOT_APPLICABLE} ${SKULL} ${NOT_APPLICABLE}`;
+  } else {
+    panelText = `${formattedInfo.newCases}  ${SKULL} ${
+      formattedInfo.newDeaths == NOT_APPLICABLE
+        ? formattedInfo.newDeaths
+        : formattedInfo.newDeaths
+    }`;
+  }
+  coronaMenu.panelButtonText.set_text(panelText);
+  coronaMenu.update(formattedInfo);
+}
+
 function init() {
   refreshPeriod = Settings.get_int("update-interval") * 60;
-
   Settings.connect("changed::" + "country", countryChangedHandler);
   Settings.connect(
     "changed::" + "update-interval",
@@ -329,28 +365,11 @@ function init() {
   );
 }
 
-function updateButtonText() {
-  var data = updateInfo.updateCoronaInfo();
-
-  let panelText;
-  if (data === null) {
-    panelText = `${NOT_APPLICABLE} ${SKULL} ${NOT_APPLICABLE}`;
-  } else {
-    panelText = `${data.newCases}  ${SKULL} ${
-      data.newDeaths == NOT_APPLICABLE ? data.newDeaths : data.newDeaths
-    }`;
-  }
-
-  coronaMenu.panelButtonText.set_text(panelText);
-  coronaMenu.update(data);
-}
-
 function enable() {
   timeout = Mainloop.timeout_add_seconds(refreshPeriod, timerHandler);
-
   coronaMenu = new CoronaMenuButton();
   Main.panel.addToStatusArea("coronaMenu", coronaMenu, 1);
-  updateButtonText();
+  requestCoronaInfo();
 }
 
 function disable() {
