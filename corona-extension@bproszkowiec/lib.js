@@ -1,10 +1,9 @@
-const ByteArray = imports.byteArray;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
-const NOT_APPLICABLE = "n/a";
-const SKULL = "\u2620";
+var NOT_APPLICABLE = "n/a";
+var SKULL = "\u2620";
 
 class CoronaInfo {
   constructor() {
@@ -18,9 +17,40 @@ class CoronaInfo {
   }
 
   formatResponse(body) {
-    let country = CoronaInfo.settings.get_string("country");
-    let data = collectData(body, country);
+    var country = CoronaInfo.settings.get_string("country");
+    var data = collectData(body, country, this.getCountryCode(country));
     return data;
+  }
+
+  getCountryCode(country) {
+    var countryCode;
+    switch (country) {
+      case "Czechia":
+        countryCode = "CZ";
+        break;
+      case "South Korea":
+        countryCode = "KR";
+        break;
+      case "Saudi Arabia":
+        countryCode = "SA";
+        break;
+      case "South Africa":
+        countryCode = "ZA";
+        break;
+      case "United Arab Emirates":
+        countryCode = "AE";
+        break;
+      case "United Kingdom":
+        countryCode = "UK";
+        break;
+      case "United States":
+        countryCode = "US";
+        break;
+      default:
+        countryCode = country;
+        break;
+    }
+    return countryCode;
   }
 }
 
@@ -28,17 +58,16 @@ removeColorFormatting = (text) => text.replace(/\u001b\[.*?m/g, "");
 
 removeNotNumber = (text) => text.replace(/[^0-9]+/g, "");
 
-function collectData(httmlData, selectedCountry) {
-  var regex = `${selectedCountry}.*║`;
-  var countryRow = httmlData.match(regex);
+function collectData(httmlData, selectedCountry, selectedCountryCode) {
+  var countryRow = httmlData.match(`│.*${selectedCountryCode}.*║`);
   if (countryRow == null) {
     return null;
   }
   countryRow = countryRow.toString().replace(/║|,|\s/gi, "");
   var countryDataArray = String(countryRow).split(/\│/);
-
+  countryDataArray.shift();
   var data = {
-    country: removeColorFormatting(countryDataArray[0].replace(/\(.*\)/gi, "")),
+    country: selectedCountry,
     totalCases: removeColorFormatting(countryDataArray[1]),
     newCases: removeColorFormatting(countryDataArray[2]),
     totalDeaths: removeColorFormatting(countryDataArray[3]),

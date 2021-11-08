@@ -324,6 +324,7 @@ function updateIntervalChangedHandler() {
 
 function requestCoronaInfo() {
   let country = Settings.get_string("country");
+  country = updateInfo.getCountryCode(country);
   GET_URL(URL + country, function (status_code, body) {
     let formattedInfo = updateInfo.formatResponse(body);
     updateButtonText(formattedInfo);
