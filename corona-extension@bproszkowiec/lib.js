@@ -59,10 +59,10 @@ removeColorFormatting = (text) => text.replace(/\u001b\[.*?m/g, "");
 removeNotNumber = (text) => text.replace(/[^0-9]+/g, "");
 
 function collectData(httmlData, selectedCountry, selectedCountryCode) {
+  if (httmlData == null) return null;
   var countryRow = httmlData.match(`│.*${selectedCountryCode}.*║`);
-  if (countryRow == null) {
-    return null;
-  }
+  if (countryRow == null) return null;
+
   countryRow = countryRow.toString().replace(/║|,|\s/gi, "");
   var countryDataArray = String(countryRow).split(/\│/);
   countryDataArray.shift();

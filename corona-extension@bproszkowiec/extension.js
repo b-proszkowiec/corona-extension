@@ -28,7 +28,7 @@ let CoronaMenuButton = GObject.registerClass(
       });
       this.panelButtonText = new St.Label({
         style_class: "corona-panel-text",
-        text: "Starting...",
+        text: "...",
       });
       this.panelButton.set_child(this.panelButtonText);
       this.add_child(this.panelButton);
@@ -60,7 +60,7 @@ let CoronaMenuButton = GObject.registerClass(
 
       // custom round preferences button
       let prefsButton = this._createRoundButton(
-        "preferences-system-symbolic",
+        "preferences",
         _("Preferences")
       );
 
@@ -74,6 +74,14 @@ let CoronaMenuButton = GObject.registerClass(
         }
       });
       customButtonBox.add_actor(prefsButton);
+
+      // custom round refresh button
+      let refreshButton = this._createRoundButton("refresh", _("Refresh"));
+
+      refreshButton.connect("clicked", (self) => {
+        requestCoronaInfo();
+      });
+      customButtonBox.add_actor(refreshButton);
 
       // add the buttons to the top bar
       item.actor.add_actor(customButtonBox);
@@ -126,9 +134,11 @@ let CoronaMenuButton = GObject.registerClass(
       let button = new St.Button({
         style_class: "message-list-clear-button button vitals-button-action",
       });
-
       button.child = new St.Icon({
-        icon_name: iconName,
+        icon_size: 25,
+        gicon: Gio.icon_new_for_string(
+          Me.dir.get_path() + `/icons/${iconName}.svg`
+        ),
       });
       return button;
     }
