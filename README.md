@@ -1,7 +1,7 @@
-# Covid-19 extension
+# Covid-19 informer extension
 
-GNOME shell extension to gets covid-19 daily statistic information for selected country.
-It based on https://corona-stats.online and shows information about:
+GNOME shell extension to get covid-19 daily statistics information for a selected country.
+It is based on https://corona-stats.online and shows information about:
 
 - today's new coronavirus cases and deaths
 - total cases
@@ -10,6 +10,8 @@ It based on https://corona-stats.online and shows information about:
 - current active cases
 - current critical cases
 - cases per 1M population
+
+![alt text](https://github.com/b-proszkowiec/corona-extension/blob/sample_picture/sample_picture.png)
 
 ## Requirements
 
