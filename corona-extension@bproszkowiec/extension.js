@@ -145,7 +145,7 @@ let CoronaMenuButton = GObject.registerClass(
       this._newDeathsIcon = new St.Icon({
         icon_size: 18,
         gicon: Gio.icon_new_for_string(
-          Me.dir.get_path() + "/icons/sick-face.svg"
+          Me.dir.get_path() + "/icons/gravestone.svg"
         ),
         style_class: "new-deaths-icon-style",
       });
@@ -347,11 +347,7 @@ function updateButtonText(formattedInfo) {
   if (formattedInfo === null) {
     panelText = `${NOT_APPLICABLE} ${SKULL} ${NOT_APPLICABLE}`;
   } else {
-    panelText = `${formattedInfo.newCases}  ${SKULL} ${
-      formattedInfo.newDeaths == NOT_APPLICABLE
-        ? formattedInfo.newDeaths
-        : formattedInfo.newDeaths
-    }`;
+    panelText = `${formattedInfo.newCases}  ${SKULL} ${formattedInfo.newDeaths}`;
   }
   coronaMenu.panelButtonText.set_text(panelText);
   coronaMenu.update(formattedInfo);
