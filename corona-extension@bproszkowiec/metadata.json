@@ -1,7 +1,17 @@
 {
   "description": "Shows information about covid-19 statistics for selected country.",
   "name": "Covid-19 informer",
-  "shell-version": ["3.36", "3.38"],
+  "shell-version": [
+    "3.20",
+    "3.22",
+    "3.26",
+    "3.32",
+    "3.34",
+    "3.36",
+    "3.38",
+    "40",
+    "41"
+  ],
   "url": "",
   "uuid": "corona-extension@bproszkowiec",
   "version": 1
