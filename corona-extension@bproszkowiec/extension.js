@@ -27,6 +27,7 @@ let CoronaMenuButton = GObject.registerClass(
         style_class: "corona-panel-action",
       });
       this.panelButtonText = new St.Label({
+        y_align: Clutter.ActorAlign.CENTER,
         style_class: "corona-panel-text",
         text: "...",
       });
